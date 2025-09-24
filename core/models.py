@@ -76,6 +76,9 @@ class GatepassRequest(models.Model):
         super().save(*args, **kwargs)
 
 
+# hello
+
+
 
 class Request(models.Model):
     REQUEST_TYPES = [
