@@ -1,0 +1,103 @@
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/gatepass.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    .container {
+        max-width: 700px;
+        margin: 30px auto;
+        background: #fff;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0px 4px 15px rgba(0,0,0,0.1);
+    }
+    .dashboard-header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .dashboard-header h2 {
+        font-size: 28px;
+        font-weight: bold;
+        color: #2c3e50;
+    }
+    p {
+        font-size: 16px;
+        margin: 8px 0;
+    }
+    h3 {
+        margin-top: 20px;
+        color: #16a085;
+    }
+    .qr-code {
+        margin-top: 20px;
+        text-align: center;
+    }
+    .qr-code img {
+        width: 250px;
+        height: 250px;
+        border: 4px solid #16a085;
+        border-radius: 12px;
+        padding: 10px;
+        background: #f9f9f9;
+    }
+    .btn-back {
+        display: inline-block;
+        margin-top: 25px;
+        padding: 12px 20px;
+        background: #3498db;
+        color: white;
+        text-decoration: none;
+        font-size: 16px;
+        font-weight: 500;
+        border-radius: 8px;
+        transition: background 0.3s ease;
+    }
+    .btn-back:hover {
+        background: #2980b9;
+    }
+    .status-approved { color: green; font-weight: bold; }
+    .status-pending { color: orange; font-weight: bold; }
+    .status-rejected { color: red; font-weight: bold; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="dashboard-header">
+        <h2><i class="fa-solid fa-id-card-clip"></i> Gatepass Details</h2>
+    </div>
+
+    <p><strong>Date:</strong> {{ gatepass.date }}</p>
+    <p><strong>Time:</strong> {{ gatepass.time }}</p>
+    <p><strong>Reason:</strong> {{ gatepass.reason }}</p>
+    <p><strong>Faculty Status:</strong> 
+        <span class="status-{{ gatepass.faculty_status|lower }}">
+            {{ gatepass.faculty_status }}
+        </span>
+    </p>
+    <p><strong>HOD Status:</strong> 
+        <span class="status-{{ gatepass.hod_status|lower }}">
+            {{ gatepass.hod_status }}
+        </span>
+    </p>
+
+    {% if gatepass.hod_status == 'Approved' %}
+        <h3><i class="fa-solid fa-circle-check"></i> Approved Gatepass</h3>
+        <p><strong>Approved Faculty:</strong> {{ gatepass.faculty.user.get_full_name }}</p>
+        <p><strong>HOD Approval Time:</strong> 
+            {% if gatepass.hod_approval_time %}
+                {{ gatepass.hod_approval_time|date:"M d, Y H:i" }}
+            {% else %}
+                Not Recorded
+            {% endif %}
+        </p>
+
+        <div class="qr-code">
+            <img src="{% url 'view_gatepass_qr' gatepass.id %}" alt="Gatepass QR Code">
+        </div>
+    {% endif %}
+
+    <a href="{% url 'gatepass_dashboard' %}" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</a>
+</div>
+{% endblock %}

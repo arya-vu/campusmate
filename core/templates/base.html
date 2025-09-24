@@ -1,0 +1,55 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CampusMate{% endblock %}</title>
+    
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>CampusMate</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="{% url 'student_dashboard' %}"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="{% url 'gatepass_dashboard' %}"><i class="fas fa-door-open"></i> Gatepass</a></li>
+                <li><a href="{% url 'request_dashboard' %}"><i class="fas fa-file-alt"></i> Requests</a></li>
+                <li><a href="#"><i class="fas fa-user-md"></i> Medical</a></li>
+                <li><a href="#"><i class="fas fa-bell"></i> Complaints</a></li>
+                <li><a href="{% url 'logout_view' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header 
+            <header class="main-header">
+                <h1>{% block header_title %}{% endblock %}</h1>
+            </header>-->
+
+            <!-- Content Area -->
+            <section class="content-area">
+                {% block content %}
+                <!-- Page-specific content will go here -->
+                {% endblock %}
+            </section>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

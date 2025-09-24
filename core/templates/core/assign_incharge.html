@@ -1,0 +1,15 @@
+
+{% block content %}
+<h3>Assign In-Charge for {{ faculty_on_leave.user.username }}</h3>
+<form method="post">
+    {% csrf_token %}
+    <label>Select Faculty:</label>
+    <select name="incharge_faculty">
+        <option value="">-- Select --</option>
+        {% for faculty in faculties %}
+            <option value="{{ faculty.id }}">{{ faculty.user.username }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Assign</button>
+</form>
+{% endblock %}

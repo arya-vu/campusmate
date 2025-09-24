@@ -1,0 +1,159 @@
+
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/faculty_dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<h2>Faculty Dashboard</h2>
+
+<!-- ======================== -->
+<!-- Notification Bar -->
+<!-- ======================== -->
+<div class="notification-bar" style="background:#f2f2f2;padding:10px;margin-bottom:15px;">
+    <h4>Notifications</h4>
+    <ul>
+        {% for note in notifications %}
+        <li>{{ note.message }} - {{ note.timestamp }}</li>
+        {% empty %}
+        <li>No new notifications.</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<!-- ======================== -->
+<!-- Leave & In-Charge Section -->
+<!-- ======================== -->
+<div class="leave-section" style="margin-bottom:15px;">
+    <p><strong>On Leave:</strong> {{ leave_faculty }}</p>
+    {% if leave_faculty and incharge_faculty %}
+        <p><strong>In-Charge Faculty:</strong> {{ incharge_faculty.user.username }}</p>
+    {% elif leave_faculty %}
+        <a href="{% url 'assign_incharge' request.user.userprofile.id %}">Assign In-Charge</a>
+    {% endif %}
+</div>
+
+<!-- ======================== -->
+<!-- Leave Update Form -->
+<!-- ======================== -->
+<div class="leave-update" style="margin-bottom:20px;">
+    <h4>Update Leave Status</h4>
+    <form method="post" action="{% url 'update_leave' request.user.userprofile.id %}">
+        {% csrf_token %}
+        <label>On Leave:</label>
+        <input type="checkbox" name="on_leave" {% if leave_faculty %}checked{% endif %}><br>
+        <label>Start Date:</label>
+        <input type="date" name="leave_start"><br>
+        <label>End Date:</label>
+        <input type="date" name="leave_end"><br>
+        <button type="submit">Update Leave</button>
+    </form>
+</div>
+
+<!-- ======================== -->
+<!-- Summary Counts -->
+<!-- ======================== -->
+<div class="summary-counts" style="margin-bottom:20px;">
+    <p><strong>Pending:</strong> {{ pending_count }}</p>
+    <p><strong>Approved:</strong> {{ approved_count }}</p>
+    <p><strong>Rejected:</strong> {{ rejected_count }}</p>
+</div>
+
+<!-- ======================== -->
+<!-- Current Requests Table -->
+<!-- ======================== -->
+<h3>Pending Gatepass Requests</h3>
+<table border="2" cellpadding="5" cellspacing="0" style="width:100%;margin-bottom:20px;">
+    <thead>
+        <tr>
+            <th>Student</th>
+            <th>Course</th>
+            <th>Reason</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for req in requests %}
+        <tr>
+            <td>
+               <a href="{% url 'student_profile' %}">
+    {{ req.student.user_profile.user.get_full_name }}
+</a>
+
+            </td>
+            <td>{{ req.student.course }}</td>
+            <td>{{ req.reason }}</td>
+            <td>{{ req.date }}</td>
+            <td>{{ req.time }}</td>
+            <td>
+                <a href="{% url 'approve_gatepass' req.id %}">Accept</a> |
+                <a href="{% url 'reject_gatepass' req.id %}">Reject</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6">No requests assigned.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- ======================== -->
+<!-- Student Request History -->
+<!-- ======================== -->
+<h3>Student Request History</h3>
+<table border="1" cellpadding="5" cellspacing="0" style="width:100%;margin-bottom:20px;">
+    <thead>
+        <tr>
+            <th>Student</th>
+            <th>Date</th>
+            <th>Reason</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for req in all_requests %}
+        <tr>
+            <td>
+                <a href="{% url 'view_student_profile' req.student.id %}">
+                     {{ req.student.user_profile.user.get_full_name }}
+                </a>
+            </td>
+            <td>{{ req.date }}</td>
+            <td>{{ req.reason }}</td>
+            <td>{{ req.faculty_status }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4">No request history.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- ======================== -->
+<!-- Day-wise Chart of Requests -->
+<!-- ======================== -->
+<h3>Gatepass Requests (Day-wise)</h3>
+<canvas id="dayChart" width="400" height="200"></canvas>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+var ctx = document.getElementById('dayChart').getContext('2d');
+var dayChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: {{ day_labels|safe }},
+        datasets: [{
+            label: 'Gatepass Requests',
+            data: {{ day_counts|safe }},
+            backgroundColor: 'rgba(54, 162, 235, 0.6)'
+        }]
+    },
+    options: {
+        scales: {
+            y: { beginAtZero: true }
+        }
+    }
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,41 @@
+
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/faculty_dashboard.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<h2>HOD Gatepass Approval</h2>
+<table>
+    <tr>
+        <th>Student</th>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Reason</th>
+        <th>Faculty Status</th>
+        <th>HOD Status</th>
+        <th>Action</th>
+    </tr>
+    {% for req in requests %}
+    <tr>
+        <td>{{ req.student.user_profile.user.username }}</td>
+        <td>{{ req.date }}</td>
+        <td>{{ req.time }}</td>
+        <td>{{ req.reason }}</td>
+        <td class="{{ req.faculty_status }}">{{ req.faculty_status }}</td>
+        <td class="{{ req.hod_status }}">{{ req.hod_status }}</td>
+        <td>
+            {% if req.hod_status == "Pending" %}
+            
+                <a href="{% url 'approve_hod_gatepass' req.id %}" class="btn-approve">Approve</a>
+                <a href="{% url 'reject_hod_gatepass' req.id %}" class="btn-reject">Reject</a>
+            {% else %}
+                -
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2>CampusMate</h2>
+            <ul>
+                <li><a href="{% url 'student_profile' %}"><i class="fa-solid fa-user"></i> Profile</a></li>
+                <li><a href="{% url 'gatepass_dashboard' %}"><i class="fa-solid fa-id-card"></i> Gatepass</a></li>
+                <li><a href="{% url 'item_recovery_dashboard' %}"><i class="fa-solid fa-box-open"></i> Item Recovery</a></li>
+                <li><a href="{% url 'medical_dashboard' %}"><i class="fa-solid fa-hospital"></i> Medical</a></li>
+                <li><a href="{% url 'request_dashboard' %}"><i class="fa-solid fa-headset"></i> Assistance</a></li>
+                <li><a href="{% url 'logout_view' %}"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header>
+                <h1>Welcome back, {{ student.full_name }}!</h1>
+                <p>CampusMate Student Portal</p>
+            </header>
+
+            <div class="dashboard-grid">
+                <div class="dashboard-card" onclick="location.href='{% url 'student_profile' %}'">
+                    <i class="fa-solid fa-user"></i>
+                    <p>Profile</p>
+                </div>
+
+                <div class="dashboard-card" onclick="location.href='{% url 'gatepass_dashboard' %}'">
+                    <i class="fa-solid fa-id-card"></i>
+                    <p>Gatepass</p>
+                </div>
+
+                <div class="dashboard-card" onclick="location.href='{% url 'item_recovery_dashboard' %}'">
+                    <i class="fa-solid fa-box"></i>
+                    <p>Item Recovery</p>
+                </div>
+
+                <div class="dashboard-card" onclick="location.href='{% url 'medical_dashboard' %}'">
+                    <i class="fa-solid fa-hospital"></i>
+                    <p>Medical</p>
+                </div>
+
+                <div class="dashboard-card" onclick="location.href='{% url 'request_dashboard' %}'">
+                    <i class="fa-solid fa-headset fa-3x"></i>
+                    <p>Assistance</p>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
